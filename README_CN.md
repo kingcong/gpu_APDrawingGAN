@@ -101,17 +101,8 @@ auxiliary.ckpt文件获取：从 https://cg.cs.tsinghua.edu.cn/people/~Yongjin/A
 
 通过官方网站安装MindSpore后，您可以按照如下步骤进行训练和评估：
 
-- 运行
 
-  ```bash
-  # 运行训练示例
-  bash scripts/run_train.sh [DATA_PATH] [LM_PATH] [BG_PATH] [CKPT_PATH] [AUXILIARY_PATH] [DEVICE_ID] [EPOCH] [SAVA_EPOCH_FREQ] [DEVICE_TARGET]
-  # 例如：
-  bash scripts/run_train.sh dataset/data/train dataset/landmark/ALL dataset/mask/ALL checkpoint auxiliary/auxiliary.ckpt 0 300 25 GPU
-
-  bash scripts/run_distribute_train.sh [RANK_TABLE_FILE] [DATA_PATH] [LM_PATH] [BG_PATH] [CKPT_PATH] [AUXILIARY_PATH] [EPOCH] [SAVA_EPOCH_FREQ]
-  # 例如：
-  bash scripts/run_distribute_train.sh hccl_8p.json dataset/data/train dataset/landmark/ALL dataset/mask/ALL checkpoint auxiliary/auxiliary.ckpt 300 25
+  ```
 
   # 运行分布式训练示例GPU
   bash scripts/run_train_distribute_GPU.sh [DATA_PATH] [LM_PATH] [BG_PATH] [CKPT_PATH] [AUXILIARY_PATH] [EPOCH] [SAVA_EPOCH_FREQ]
@@ -124,44 +115,7 @@ auxiliary.ckpt文件获取：从 https://cg.cs.tsinghua.edu.cn/people/~Yongjin/A
   bash scripts/run_eval.sh test_dataset/data/test_single/ test_dataset/landmark/ALL test_dataset/mask/ALL test_result checkpoint/netG_300.ckpt GPU
   ```
 
-- 在 ModelArts 进行训练 (如果你想在modelarts上运行，可以参考以下文档 [modelarts](https://support.huaweicloud.com/modelarts/))
 
-    - 在 ModelArts 上使用8卡训练
-
-      ```python
-      # (1) 在网页上设置 "isModelarts=True"
-      #     在网页上设置 "run_distribute=True"
-      # (2) 上传你的数据集到obs桶上，设置文件夹名为data
-      # (3) 把auxiliary.ckpt文件和config_train.yaml文件放到data文件夹下
-      # (4) 在网页上设置你的代码路径为 "/ap-drawing-db/code/"
-      # (5) 在网页上设置启动文件为 "train.py"
-      # (6) 在网页上设置"训练数据集"、"训练输出文件路径"、"作业日志路径"等
-      # (7) 创建训练作业
-      ```
-
-    - 在 ModelArts 上使用单卡验证
-
-      ```python
-      # (1) 在网页上设置 "isModelarts=True"
-      #     在网页上设置 "model_path=netG_300.ckpt"
-      # (2) 上传你的测试数据集到obs桶上，设置文件夹名为test_data
-      # (3) 把netG_300.ckpt文件和config_eval_and_export.yaml文件放到test_data文件夹下
-      # (4) 在网页上设置你的代码路径为 "/ap-drawing-db/code/"
-      # (5) 在网页上设置启动文件为 "eval.py"
-      # (6) 在网页上设置"训练数据集"、"训练输出文件路径"、"作业日志路径"等
-      # (7) 创建训练作业
-      ```
-
-    - 在 ModelArts 上使用单卡导出mindir文件
-
-      ```python
-      # (1) 在网页上设置 "isModelarts=True"
-      #     在网页上设置 "model_path=netG_300.ckpt"
-      # (2) 把netG_300.ckpt文件和config_eval_and_export.yaml文件放到test_data文件夹下
-      # (3) 在网页上设置你的代码路径为 "/ap-drawing-db/code/"
-      # (4) 在网页上设置启动文件为 "export.py"
-      # (5) 在网页上设置"训练数据集"、"训练输出文件路径"、"作业日志路径"等
-      # (6) 创建训练作业
       ```
 
 # 脚本说明
@@ -320,9 +274,6 @@ auxiliary.ckpt文件获取：从 https://cg.cs.tsinghua.edu.cn/people/~Yongjin/A
     ```
 
 
-  ```bash
-  bash scripts/run_distribute_train.sh hccl_8p_01_127.0.0.1.json dataset/data/train dataset/landmark/ALL dataset/mask/ALL checkpoint auxiliary/auxiliary.ckpt 300 25
-  ```
 
   上述shell脚本将在后台运行分布式训练。您可以通过train_parallel[X]/train.log文件查看结果。
 
@@ -387,32 +338,35 @@ auxiliary.ckpt文件获取：从 https://cg.cs.tsinghua.edu.cn/people/~Yongjin/A
 ## 性能
 
 ### 训练性能
-
-| --------------------------| ---------------------- | ---------------------- |
-| 模型版本                  | APDrawingGAN           |APDrawingGAN           |
-| 上传日期                  | 2021-12-09      |2022-03-07      |
-| MindSpore版本             | 1.3.0              |1.5.0              |
-| 数据集                    |          APDrawingDB     |APDrawingDB     |
-| 训练参数                  | epoch=300, lr=0.0002, bata1=0.5             |epoch=300, lr=0.0002, bata1=0.5             |
-| 优化器                    | Adam                                                    |Adam                   |
-| 损失函数                  | Distance transformer loss & L1 loss                                    |Distance transformer loss & L1 loss    |
-| 输出                      | 图片                                                         |图片  |
-| 损失                      |GANLoss,L1Loss,localLoss,DTLoss|GANLoss,L1Loss,localLoss,DTLoss|
-| 速度                      | 单卡：357毫秒/步;  8卡：380毫秒/步                      |单卡: 442毫秒/步;8卡：506毫秒/步|
-| 总时长                    | 单卡：750分钟;  8卡：120分钟                      |单卡：920分钟 ; 8卡：140分钟 |
-| 微调检查点                | 243.37MB (.ckpt文件)                             |273.43MB (.ckpt文件)|
+| 参数                      | GPU               |
+| --------------------------|  ---------------------- |
+| 模型版本                  | APDrawingGAN           |
+| 资源                      | GPU(Tesla V100-SXM2 32G)；CPU：3.0GHz 36cores ；RAM：0.5T|
+| 上传日期                  |2022-03-07      |
+| MindSpore版本             | 1.5.0              |
+| 数据集                    |      APDrawingDB     |
+| 训练参数                  | epoch=300, lr=0.0002, bata1=0.5             |
+| 优化器                    | Adam                   |
+| 损失函数                  | Distance transformer loss & L1 loss    |
+| 输出                      | 图片  |
+| 损失                      |GANLoss,L1Loss,localLoss,DTLoss|
+| 速度                      | 单卡: 442毫秒/步;8卡：506毫秒/步|
+| 总时长                    | 单卡：920分钟 ; 8卡：140分钟 |
+| 微调检查点                |273.43MB (.ckpt文件)|
 | 推理模型                  | 250.53M(.mindir) |
 | 脚本                      | [APDrawingGAN脚本](https://gitee.com/yang-mengYM/models_1/tree/master/research/cv/APDrawingGAN) |
 
 ### 评估性能
 
-| ------------------- | --------------------------- |--------------------------- |
-| 模型版本       | APDrawingGAN                |APDrawingGAN  |
-| 上传日期       | 2021-12-09 |2022-03-07      |
-| MindSpore 版本   | 1.3.0                       |1.5.0|
-| 数据集             | APDrawingDB |APDrawingDB |
-| batch_size          | 1                         |1   |
-| 输出             | 图片      | 图片      |
+| 参数          |GPU       |
+| ------------------- | --------------------------- |
+| 模型版本       | APDrawingGAN  |
+| 资源            | GPU(Tesla V100-SXM2 32G)；CPU：3.0GHz 36cores ；RAM：0.5T |
+| 上传日期       |2022-03-07      |
+| MindSpore 版本   | 1.5.0|
+| 数据集             | APDrawingDB |
+| batch_size          | 1   |
+| 输出             |  图片      |
 | 推理模型 | 250.53M(.mindir) |
 
 # 随机情况说明
